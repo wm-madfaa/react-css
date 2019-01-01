@@ -1,6 +1,6 @@
 {
-  "name": "react-css",
-  "version": "0.0.1",
+  "name": "@wasim.almadfaa/react-css",
+  "version": "0.0.2",
   "author": "Wasim Almadfaa",
   "main": "dist/index.js",
   "module": "dist/index.js",

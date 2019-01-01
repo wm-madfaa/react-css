@@ -10,11 +10,11 @@ react-CSS allows you to write actual CSS code to style your components. It also 
 
 npm
 ```
-npm i react-css
+npm i @wasim.almadfaa/react-css
 ```
 yarn
 ```
-yarn add  react-css
+yarn add @wasim.almadfaa/react-css
 ```
 github
 ```
