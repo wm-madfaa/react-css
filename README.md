@@ -1,68 +1,213 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# react-css 
 
-## Available Scripts
+Use the power of ES6 and CSS to style your react apps without stress
 
-In the project directory, you can run:
+## Getting Started
 
-### `npm start`
+react-CSS allows you to write actual CSS code to style your components. It also removes the mapping between components and styles – simply it is the alternative to the styled-components if you searching for a mini package do the same job that the styled-compoents does.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Installing
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+npm
+```
+npm i react-css
+```
+yarn
+```
+yarn add  react-css
+```
+github
+```
+git clone https://github.com/wm-madfaa/react-css.git
+```
 
-### `npm test`
+or you can copy and pest it in your project as a normal component!
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```jsx
+import  React, { createContext, Fragment } from  "react";
+import  PropTypes  from  "prop-types";
+import { createPortal } from  "react-dom";
+const { Provider, Consumer } =  createContext({ theme: {} });
 
-### `npm run build`
+const  Theme  = ({ value  = {theme:  {}},  children }) => (
+	<Provider  value={value}>{children}</Provider>
+);
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+const  Styled  =  props  => {
+	const { css, children, ...rest } =  props;
+	const  hashPrefix  =  Math.random().toString(32).slice(-8);
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+	return (
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+		<Fragment>
 
-### `npm run eject`
+			<Consumer>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+				{themes  =>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+					createPortal(
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+					<style  type="text/css">
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+					{props.css(hashPrefix, rest, themes.theme)}
 
-## Learn More
+					</style>,
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+					document.head
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+					)
 
-### Code Splitting
+				}
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+			</Consumer>
 
-### Analyzing the Bundle Size
+			{children(hashPrefix)}
+		</Fragment>
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+	);
 
-### Making a Progressive Web App
+};
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+Styled.propTypes  = {
+css:  PropTypes.func.isRequired,
+children:  PropTypes.func.isRequired
+};
+export { Styled  as  default, Theme };
+```
 
-### Advanced Configuration
+## Getting Started
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+### Adapting based on props
 
-### Deployment
+use Es6 (template literals) to include js code within the css code.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+```jsx
+import Styled from 'Styled';
 
-### `npm run build` fails to minify
+const css = (prefix,props) =>`
+	componentName-${prefix}{
+		color: ${props.color}
+	}
+`
+function Component(props){
+	return(
+		<Styled css={css} color={props.color}>
+			{prefix => 
+				<div className={`componentName-${prefix}`}>
+					Lorem ipsum dolor sit amet
+				</div>
+			}
+		</Styled>
+	)
+}
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Extending Styles
+
+To easily make a new component that inherits the styling of another.
+```jsx
+import Styled from 'Styled';
+
+const css_1 = (prefix,props) =>`
+	text-color-${prefix}{
+		color: ${props.color}
+	}
+`
+
+function Component_1(props){
+	return(
+		<Styled css={css_1} color={props.color}>
+			{prefix => 
+				<div className={`css_1-${prefix}`}>
+					Lorem ipsum dolor sit amet
+				</div>
+			}
+		</Styled>
+	)
+}
+
+const css_2 = (prefix,props) =>`
+	background-color-${prefix}{
+		background: ${props.background}
+	}
+	${css_1(prefix,props)}
+`
+
+function Component_2(props){
+	return(
+		<Styled css={css_1} color={props.color} background={props.background}>
+			{prefix => 
+				<div className={`css_2-${prefix}`}>
+					Lorem ipsum dolor sit amet
+				</div>
+			}
+		</Styled>
+	)
+}
+```
+
+### Theming
+react-css  has full theming support by exporting a <Theme> wrapper component. This component provides a theme to all React components underneath itself via the context API. In the render tree all styled-components will have access to the provided theme, even when they are multiple levels deep.
+
+```jsx
+import Styled, {Theme} from 'Styled';
+
+const css_1 = (prefix,props, theme) =>`
+	text-color-${prefix}{
+		color: ${props.color};
+		font-size: ${theme.fontSize}
+	}
+`
+
+function Component_1(props){
+	return(
+		<Styled css={css_1} color={props.color}>
+			{prefix => 
+				<div className={`css_1-${prefix}`}>
+					Lorem ipsum dolor sit amet
+				</div>
+			}
+		</Styled>
+	)
+}
+
+const css_2 = (prefix,props, theme) =>`
+	background-color-${prefix}{
+		background: ${props.background}
+		font-size: ${theme.fontSize}
+	}
+	${css_1(prefix,props, theme)}
+`
+
+function Component_2(props){
+	return(
+		<Styled css={css_1} color={props.color} background={props.background}>
+			{prefix => 
+				<div className={`css_2-${prefix}`}>
+					Lorem ipsum dolor sit amet
+				</div>
+			}
+		</Styled>
+	)
+}
+
+function Root (props){
+	return (
+		<Theme value={{theme: {
+			fontSize: '14px'
+		}}}>
+			<Component_1 />
+			<Component_2 />
+		</Theme>
+	)
+}
+```
+
+## Authors
+
+* **Wasim Almadfaa**  
+***email***:  wm.almadfaa@gmail.com
+
+## License
+
+This project is licensed under the GNU General Public License - see the [LICENSE.md](https://github.com/wm-madfaa/react-css/blob/master/LICENSE) file for details
