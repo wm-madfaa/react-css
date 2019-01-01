@@ -1,7 +1,8 @@
 {
   "name": "@wasim.almadfaa/react-css",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "author": "Wasim Almadfaa",
+  "license": "GNU General Public License v3.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": ["dist", "README.md"],
